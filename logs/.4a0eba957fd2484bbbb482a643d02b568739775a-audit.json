@@ -1,0 +1,14 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "logs\\.4a0eba957fd2484bbbb482a643d02b568739775a-audit.json",
+    "files": [
+        {
+            "date": 1567797641297,
+            "name": "logs\\2019-09-06-new_agents.log",
+            "hash": "827e6937424c5f5dc1c55a0ae13e5fc9"
+        }
+    ]
+}

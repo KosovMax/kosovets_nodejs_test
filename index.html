@@ -60,15 +60,7 @@
               reader.readAsDataURL(file);
               reader.onload = function(evt){
                 console.log(evt)
-                  // $('#imageSelected').attr('src', evt.target.result);
-                  // $('#selectedImageConainer').css('display', '');
-                  // var phoneNum = $('#phoneNumber').val();
-                  // var jsonObject = {
-                  //     'imageData': evt.target.result,
-                  //     'imageMetaData': 'image/'
-                  // }
-     
-                  // send a custom socket message to server
+
                   socket.emit('slice upload', {
                       userAgent: window.navigator.userAgent,
                       imageData: evt.target.result,
@@ -79,32 +71,6 @@
                  })
               };
             }
-              // reader.readAsDataURL(file);
-
-            // var file = document.getElementById('img');
-
-            // console.log(file, img, json, json.query);
-
-            // var fileReader = new FileReader(); 
-            //     slice = file.slice(0, 100000); 
-
-            // fileReader.readAsArrayBuffer(slice); 
-            // fileReader.onload = function(){
-            //     var arrayBuffer = fileReader.result; 
-            //     socket.emit('slice upload', { 
-            //         name: file.name, 
-            //         type: file.type, 
-            //         size: file.size, 
-            //         data: arrayBuffer 
-            //     }); 
-
-            //      socket.on('end upload', function (data) {
-            //         console.log(data);
-            //      })
-            //      socket.on('upload error', function (data) {
-            //         console.log(data);
-            //      })
-            // }
 
             sendReguest({json:json, raw:raw, query:json.query})
         });

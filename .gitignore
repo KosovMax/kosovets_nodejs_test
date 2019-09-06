@@ -1,2 +1,2 @@
-/logs/*
-/public/images/*
+!/logs
+!/public/images
