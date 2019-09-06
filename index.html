@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Log</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <h1>Test Log</h1>
+
+  <div class="form-group">
+    <label for="json">Json</label>
+    <input type="text" class="form-control" id="json" value='{ "type": "test", "query": "nodejs socket.io" }' />
+  </div>
+  <div class="form-group">
+    <label for="raw">Raw:</label>
+    <input type="text" class="form-control" id="raw" value="Test here!!!">
+  </div>
+  <div class="form-group">
+    <label for="img">Image:</label>
+    <input type="file" class="form-control" id="img" accept=".jpg, .jpeg, .png">
+  </div>
+  <button type="button" class="btn btn-primary" id="send">Send</button>
+
+<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+<script>
+    var socket = io.connect('http://localhost:3000');
+    runSocket();
+
+
+    function runSocket(){
+        socket.on('connect', function() {
+            if(socket.connected){
+                socket.emit('new agent', { userAgent: window.navigator.userAgent });
+            }else{
+                setTimeout(function(){
+                    runSocket();
+                }, 1000);
+            }
+        }); 
+    }
+
+    $(document).ready(function(){
+        $('#send').off('click').click(function(){
+            
+            var json = JSON.parse($('#json').val());
+            var raw = $('#raw').val();
+            var file = $('#img')[0].files[0];
+
+            console.log(file);
+
+            if($('#img')[0].files.length != 0){
+
+            // var file = e.originalEvent.target.files[0],
+              var   reader = new FileReader();
+              reader.readAsDataURL(file);
+              reader.onload = function(evt){
+                console.log(evt)
+                  // $('#imageSelected').attr('src', evt.target.result);
+                  // $('#selectedImageConainer').css('display', '');
+                  // var phoneNum = $('#phoneNumber').val();
+                  // var jsonObject = {
+                  //     'imageData': evt.target.result,
+                  //     'imageMetaData': 'image/'
+                  // }
+     
+                  // send a custom socket message to server
+                  socket.emit('slice upload', {
+                      userAgent: window.navigator.userAgent,
+                      imageData: evt.target.result,
+                      imageName:file.name
+                  });
+                  socket.on('end upload', function (data) {
+                    console.log(data);
+                 })
+              };
+            }
+              // reader.readAsDataURL(file);
+
+            // var file = document.getElementById('img');
+
+            // console.log(file, img, json, json.query);
+
+            // var fileReader = new FileReader(); 
+            //     slice = file.slice(0, 100000); 
+
+            // fileReader.readAsArrayBuffer(slice); 
+            // fileReader.onload = function(){
+            //     var arrayBuffer = fileReader.result; 
+            //     socket.emit('slice upload', { 
+            //         name: file.name, 
+            //         type: file.type, 
+            //         size: file.size, 
+            //         data: arrayBuffer 
+            //     }); 
+
+            //      socket.on('end upload', function (data) {
+            //         console.log(data);
+            //      })
+            //      socket.on('upload error', function (data) {
+            //         console.log(data);
+            //      })
+            // }
+
+            sendReguest({json:json, raw:raw, query:json.query})
+        });
+    });
+
+    function sendReguest(data){
+
+        if(socket.connected){
+            socket.emit('info reguests', { 
+                userAgent: window.navigator.userAgent,
+                json:data.json,
+                raw:data.raw
+            });
+
+             socket.on('info search', function (data) {
+                console.log(data);
+             })
+        }else{
+            setTimeout(function(){
+                sendReguest(data);
+            }, 1000);
+        }
+    }
+
+</script>
+
+</body>
+<html>
